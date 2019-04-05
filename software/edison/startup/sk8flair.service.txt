@@ -1,0 +1,16 @@
+
+[Unit]
+Description=Sk8Flair
+Requires=bluetooth.target
+After=bluetooth.target
+
+[Service]
+Type=simple
+RemainAfterExit=true
+ExecStart=/home/root/sk8flair/sk8flair_service_d start
+Environment="HOME=/home/root/"
+WorkingDirectory=/home/root/sk8flair
+
+[Install]
+WantedBy=multi-user.target
+

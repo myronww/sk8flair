@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="red" >#ff0000</color>
+    <color name="redorange" >#ff8000</color>
+    <color name="orange" >#ffa500</color>
+    <color name="yellow">#ffff00</color>
+    <color name="ltyellowgreen">#a5ff00</color>
+    <color name="yellowgreen">#80ff00</color>
+    <color name="green" >#00ff00</color>
+    <color name="ltgreen" >#00ff80</color>
+    <color name="greencyan" >#00ffa5</color>
+    <color name="cyan" >#00ffff</color>
+    <color name="ltbluecyan" >#00a5ff</color>
+    <color name="bluecyan" >#0080ff</color>
+    <color name="blue" >#0000ff</color>
+    <color name="blueviolet" >#8000ff</color>
+    <color name="violet" >#a500ff</color>
+    <color name="magenta" >#ff00ff</color>
+    <color name="darkmagenta" >#ff00a5</color>
+    <color name="magentared" >#ff00b0</color>
+</resources>

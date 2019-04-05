@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlairEngine>
+    <Motion>
+        <FallThreshold>-9000</FallThreshold>
+        <FallDetectTime>5000</FallDetectTime>
+        <RecoverDetectTime>2000</RecoverDetectTime>
+        <StompImpactThreshold>15000</StompImpactThreshold>
+        <StompRiseThreshold>-2000</StompRiseThreshold>
+        <StompTimeout>2000</StompTimeout>
+    </Motion>
+    <Palette type="LightPaletteSolid">
+        <Red>255</Red>
+        <Green>0</Green>
+        <Blue>255</Blue>
+    </Palette>
+    <EffectChain>
+        <!-- Highest priority effect is last. -->
+        <Effect type="LightEffectStomp">
+            <Duration>800</Duration>
+            <ActiveColor>
+                <Brightness>1.0</Brightness>
+                <Red>255</Red>
+                <Green>255</Green>
+                <Blue>255</Blue>
+            </ActiveColor>
+        </Effect>
+        <Effect type="LightEffectFall">
+            <Duration>1000</Duration>
+        </Effect>
+    </EffectChain>
+</FlairEngine>

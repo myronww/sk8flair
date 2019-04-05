@@ -1,0 +1,89 @@
+
+   STOMP UP
+
+ax_min=-890 ax_max=0 ay_min=0 ay_max=450 az_min=0 az_max=16377
+ax_min=-925 ax_max=0 ay_min=0 ay_max=450 az_min=0 az_max=16377
+ax_min=-935 ax_max=0 ay_min=0 ay_max=450 az_min=0 az_max=16377
+ax_min=-935 ax_max=0 ay_min=0 ay_max=450 az_min=0 az_max=16417
+ax_min=-935 ax_max=0 ay_min=0 ay_max=450 az_min=0 az_max=16479
+ax_min=-946 ax_max=0 ay_min=0 ay_max=469 az_min=0 az_max=16479
+ax_min=-946 ax_max=0 ay_min=0 ay_max=476 az_min=0 az_max=16479
+ax_min=-950 ax_max=0 ay_min=0 ay_max=484 az_min=0 az_max=16479
+ax_min=-952 ax_max=0 ay_min=0 ay_max=484 az_min=0 az_max=16479
+ax_min=-960 ax_max=0 ay_min=0 ay_max=484 az_min=0 az_max=16479
+ax_min=-1083 ax_max=0 ay_min=0 ay_max=484 az_min=0 az_max=16479
+ax_min=-1100 ax_max=0 ay_min=0 ay_max=484 az_min=0 az_max=16734
+ax_min=-1100 ax_max=0 ay_min=0 ay_max=593 az_min=0 az_max=16734
+ax_min=-1128 ax_max=0 ay_min=0 ay_max=624 az_min=0 az_max=16734
+ax_min=-1128 ax_max=0 ay_min=0 ay_max=665 az_min=0 az_max=16734
+ax_min=-1128 ax_max=0 ay_min=0 ay_max=698 az_min=0 az_max=16734
+ax_min=-1128 ax_max=0 ay_min=0 ay_max=800 az_min=0 az_max=16734
+ax_min=-1128 ax_max=0 ay_min=0 ay_max=864 az_min=0 az_max=16734
+ax_min=-1163 ax_max=0 ay_min=0 ay_max=864 az_min=0 az_max=16734
+ax_min=-1294 ax_max=0 ay_min=0 ay_max=864 az_min=0 az_max=16734
+ax_min=-1294 ax_max=0 ay_min=0 ay_max=880 az_min=0 az_max=16734
+ax_min=-1294 ax_max=0 ay_min=0 ay_max=937 az_min=0 az_max=16734
+ax_min=-1303 ax_max=0 ay_min=0 ay_max=937 az_min=0 az_max=16734
+ax_min=-1318 ax_max=0 ay_min=0 ay_max=937 az_min=0 az_max=16734
+ax_min=-1325 ax_max=0 ay_min=0 ay_max=937 az_min=0 az_max=16734
+ax_min=-1325 ax_max=0 ay_min=0 ay_max=1040 az_min=0 az_max=16734
+ax_min=-1325 ax_max=0 ay_min=0 ay_max=1056 az_min=0 az_max=17337
+ax_min=-1325 ax_max=0 ay_min=0 ay_max=1056 az_min=0 az_max=18175
+ax_min=-1325 ax_max=0 ay_min=-78 ay_max=1056 az_min=0 az_max=21512
+ax_min=-1325 ax_max=0 ay_min=-78 ay_max=1056 az_min=0 az_max=24847
+ax_min=-1325 ax_max=217 ay_min=-78 ay_max=1221 az_min=0 az_max=27045
+ax_min=-1325 ax_max=1532 ay_min=-78 ay_max=3968 az_min=0 az_max=30118
+ax_min=-1325 ax_max=1532 ay_min=-78 ay_max=3968 az_min=0 az_max=32327
+ax_min=-1325 ax_max=1532 ay_min=-78 ay_max=3968 az_min=0 az_max=32657
+ax_min=-1325 ax_max=1532 ay_min=-78 ay_max=3968 az_min=0 az_max=32760
+ax_min=-1325 ax_max=2159 ay_min=-78 ay_max=3968 az_min=0 az_max=32760
+ax_min=-1325 ax_max=2159 ay_min=-78 ay_max=5424 az_min=0 az_max=32760
+ax_min=-1325 ax_max=2159 ay_min=-4780 ay_max=5424 az_min=0 az_max=32760
+ax_min=-1325 ax_max=2159 ay_min=-12754 ay_max=5424 az_min=0 az_max=32760
+ax_min=-1325 ax_max=2159 ay_min=-12754 ay_max=5424 az_min=-20207 az_max=32760
+ax_min=-1325 ax_max=2159 ay_min=-12754 ay_max=5424 az_min=-22906 az_max=32760
+ax_min=-1648 ax_max=2159 ay_min=-12754 ay_max=5424 az_min=-22906 az_max=32760
+ax_min=-4687 ax_max=2159 ay_min=-12754 ay_max=5424 az_min=-22906 az_max=32760
+ax_min=-6051 ax_max=2159 ay_min=-12754 ay_max=5424 az_min=-22906 az_max=32760
+ax_min=-6051 ax_max=2159 ay_min=-12754 ay_max=6259 az_min=-22906 az_max=32760
+ax_min=-6051 ax_max=2159 ay_min=-12754 ay_max=7433 az_min=-22906 az_max=32760
+ax_min=-6051 ax_max=2159 ay_min=-12754 ay_max=7809 az_min=-22906 az_max=32760
+ax_min=-6051 ax_max=2159 ay_min=-12754 ay_max=8107 az_min=-22906 az_max=32760
+ax_min=-6051 ax_max=2159 ay_min=-12754 ay_max=8806 az_min=-22906 az_max=32760
+ax_min=-6051 ax_max=2159 ay_min=-12754 ay_max=9716 az_min=-22906 az_max=32760
+ax_min=-6051 ax_max=2159 ay_min=-12754 ay_max=9910 az_min=-22906 az_max=32760
+
+
+   STOMP DOWN
+
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=1309 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=1404 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=1492 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=1504 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=1564 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=1722 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=1881 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=1959 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=2042 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=2203 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=2266 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=2506 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=2586 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=2595 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=2603 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=3089 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=3347 az_min=0 az_max=17775
+ax_min=-2709 ax_max=0 ay_min=-534 ay_max=3359 az_min=0 az_max=17775
+ax_min=-3086 ax_max=0 ay_min=-534 ay_max=3359 az_min=0 az_max=17775
+ax_min=-4668 ax_max=0 ay_min=-750 ay_max=3359 az_min=0 az_max=17775
+ax_min=-8100 ax_max=0 ay_min=-750 ay_max=3359 az_min=0 az_max=17775
+ax_min=-9506 ax_max=0 ay_min=-750 ay_max=3359 az_min=-3662 az_max=17775
+ax_min=-9506 ax_max=0 ay_min=-750 ay_max=3359 az_min=-21969 az_max=17775
+ax_min=-9506 ax_max=1747 ay_min=-5741 ay_max=3359 az_min=-32760 az_max=17775
+ax_min=-9506 ax_max=9100 ay_min=-9385 ay_max=3359 az_min=-32760 az_max=17775
+ax_min=-9506 ax_max=9100 ay_min=-11433 ay_max=3359 az_min=-32760 az_max=26558
+ax_min=-9506 ax_max=13968 ay_min=-11433 ay_max=3359 az_min=-32760 az_max=26558
+ax_min=-9506 ax_max=13968 ay_min=-11433 ay_max=18038 az_min=-32760 az_max=32760
+ax_min=-10865 ax_max=13968 ay_min=-11433 ay_max=18038 az_min=-32760 az_max=32760
+
+

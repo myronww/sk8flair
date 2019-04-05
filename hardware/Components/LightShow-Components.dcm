@@ -1,0 +1,99 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP CONN_2P
+D Symbole general de connecteur
+K CONN
+$ENDCMP
+#
+$CMP GND-LEFT
+K POWER, PWR
+$ENDCMP
+#
+$CMP GND-RIGHT
+K POWER, PWR
+$ENDCMP
+#
+$CMP L3GD20
+D 16 Bit 3 Axis Digital MEMS Gyroscope
+K 3-Axis MEMS Gyroscope
+F http://www.st.com/internet/analog/product/252443.jsp
+$ENDCMP
+#
+$CMP LD3985G122R
+D LD3985G122R, 150 mA Low Dropout Voltage Regulator, Fixed Output 1.22V, TSOT-23-5
+K 150mA LDO Regulator Fixed Positive
+F http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/DATASHEET/CD00003395.pdf
+$ENDCMP
+#
+$CMP LD3985G18R
+D LD3985G18R, 150 mA Low Dropout Voltage Regulator, Fixed Output 1.8V, TSOT-23-5
+K 150mA LDO Regulator Fixed Positive
+F http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/DATASHEET/CD00003395.pdf
+$ENDCMP
+#
+$CMP LD3985G25R
+D LD3985G25R, 150 mA Low Dropout Voltage Regulator, Fixed Output 2.5V, TSOT-23-5
+K 150mA LDO Regulator Fixed Positive
+F http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/DATASHEET/CD00003395.pdf
+$ENDCMP
+#
+$CMP LD3985G26R
+D LD3985G26R, 150 mA Low Dropout Voltage Regulator, Fixed Output 2.6V, TSOT-23-5
+K 150mA LDO Regulator Fixed Positive
+F http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/DATASHEET/CD00003395.pdf
+$ENDCMP
+#
+$CMP LD3985G27R
+D LD3985G27R, 150 mA Low Dropout Voltage Regulator, Fixed Output 2.7V, TSOT-23-5
+K 150mA LDO Regulator Fixed Positive
+F http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/DATASHEET/CD00003395.pdf
+$ENDCMP
+#
+$CMP LD3985G28R
+D LD3985G28R, 150 mA Low Dropout Voltage Regulator, Fixed Output 2.8V, TSOT-23-5
+K 150mA LDO Regulator Fixed Positive
+F http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/DATASHEET/CD00003395.pdf
+$ENDCMP
+#
+$CMP LD3985G30R
+D LD3985G30R, 150 mA Low Dropout Voltage Regulator, Fixed Output 3.0V, TSOT-23-5
+K 150mA LDO Regulator Fixed Positive
+F http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/DATASHEET/CD00003395.pdf
+$ENDCMP
+#
+$CMP LD3985G33R
+D LD3985G33R, 150 mA Low Dropout Voltage Regulator, Fixed Output 3.3V, TSOT-23-5
+K 150mA LDO Regulator Fixed Positive
+F http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/DATASHEET/CD00003395.pdf
+$ENDCMP
+#
+$CMP LD3985G47R
+D LD3985G47R, 150 mA Low Dropout Voltage Regulator, Fixed Output 4.7V, TSOT-23-5
+K 150mA LDO Regulator Fixed Positive
+F http://www.st.com/internet/com/TECHNICAL_RESOURCES/TECHNICAL_LITERATURE/DATASHEET/CD00003395.pdf
+$ENDCMP
+#
+$CMP LED
+K LED
+$ENDCMP
+#
+$CMP LSM303DLHC
+D 16 Bit 3 Axis Digital MEMS Accelerometer + Magnetometer
+K 3-Axis MEMS Accelerometer Magnetometer
+F http://www.st.com/internet/analog/product/251940.jsp
+$ENDCMP
+#
+$CMP MCP73831
+D Li-Polymer Charge Management Controller
+$ENDCMP
+#
+$CMP MICRO-B_USB
+D Micro-B USB connector
+$ENDCMP
+#
+$CMP TXS0102-QFN
+D 2-bit bidirectional Voltage-Level translator for Open-Drain and Push-Pull applications
+F /dati/Documenti/Elettronica/DATA_SHEET/Elettronici/Integrati/Digitali/Drivers/TI_TXS0102.pdf
+$ENDCMP
+#
+#End Doc Library

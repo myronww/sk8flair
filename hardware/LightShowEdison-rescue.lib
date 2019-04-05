@@ -1,0 +1,21 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#
+# SM_JMP-RESCUE-LightShowEdison
+#
+DEF ~SM_JMP-RESCUE-LightShowEdison SJ 0 40 Y Y 1 F N
+F0 "SJ" 150 -100 60 H V C CNN
+F1 "SM_JMP-RESCUE-LightShowEdison" -200 150 60 H I C CNN
+F2 "" 50 50 60 H V C CNN
+F3 "" 50 50 60 H V C CNN
+DRAW
+A 0 -10 50 -1799 -1 0 1 0 f -50 -10 50 -10
+A 0 10 50 1 1799 0 1 0 f 50 10 -50 10
+P 2 0 1 0  -50 -10  50 -10 N
+P 2 0 1 0  -50 10  50 10 N
+X ~ ~ 0 -100 39 U 39 39 1 1 P
+X ~ ~ 0 100 39 D 39 39 1 1 P
+ENDDRAW
+ENDDEF
+#
+#End Library

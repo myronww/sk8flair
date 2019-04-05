@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlairEngine>
+    <Palette type="LightPaletteSolid">
+    	<Red>0</Red>
+    	<Green>0</Green>
+    	<Blue>255</Blue>
+    </Palette>
+	<EffectChain>	
+	</EffectChain>
+</FlairEngine>

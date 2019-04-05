@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/myron/AndroidStudioProjects/Flair/app/build/intermediates/exploded-aar/com.android.support/support-v13/23.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="f3a3189a228a65d03b3ea92a1b58a2b44bc7366e">
+        <dex dex="/Users/myron/AndroidStudioProjects/Flair/app/build/intermediates/pre-dexed/debug/com.android.support-support-v13-23.2.0_b9c9557aff9d10d8cb8fc31b67d332a8c1d9cec5.jar" />
+    </item>
+    <item
+        jar="/Users/myron/AndroidStudioProjects/Flair/app/build/intermediates/exploded-aar/com.android.support/support-v13/23.2.0/jars/libs/internal_impl-23.2.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="58d0010cb4373696cfdc5894c4b23649af58ed18">
+        <dex dex="/Users/myron/AndroidStudioProjects/Flair/app/build/intermediates/pre-dexed/debug/internal_impl-23.2.0_74c0a7985bf00813e77f6e44bc3bf8ae9091e70f.jar" />
+    </item>
+    <item
+        jar="/Users/myron/AndroidStudioProjects/Flair/app/build/intermediates/exploded-aar/Flair/gizmos/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="49a3371224bb3c8a3e78523cc107e723cc1a64ef">
+        <dex dex="/Users/myron/AndroidStudioProjects/Flair/app/build/intermediates/pre-dexed/debug/Flair-gizmos-unspecified_06ab415fca04f4c791454e13c46b5ca0d356c955.jar" />
+    </item>
+    <item
+        jar="/Users/myron/AndroidStudioProjects/Flair/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.0/jars/libs/internal_impl-23.2.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="6e239441500605809818997dd63b62a947195f8c">
+        <dex dex="/Users/myron/AndroidStudioProjects/Flair/app/build/intermediates/pre-dexed/debug/internal_impl-23.2.0_d996289b212ee5b95e637d86f984352540d32e11.jar" />
+    </item>
+    <item
+        jar="/Users/myron/AndroidStudioProjects/Flair/app/build/intermediates/exploded-aar/Flair/colorpicker/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="9413306ac3904136a6cbcd13b0db45e973c1e05f">
+        <dex dex="/Users/myron/AndroidStudioProjects/Flair/app/build/intermediates/pre-dexed/debug/Flair-colorpicker-unspecified_df9180f43bc123ab69111215a11595107e98b44c.jar" />
+    </item>
+    <item
+        jar="/Developer/Android/extras/android/m2repository/com/android/support/support-annotations/23.2.0/support-annotations-23.2.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="c5bf571bb10462bd90e5419ade67793f71acbc87">
+        <dex dex="/Users/myron/AndroidStudioProjects/Flair/app/build/intermediates/pre-dexed/debug/support-annotations-23.2.0_ca331eb5373b9c1392f14ac076f8f530a5daa474.jar" />
+    </item>
+    <item
+        jar="/Users/myron/AndroidStudioProjects/Flair/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="e5f32fa48a3eb2de0c987025c11b6e3864b634d9">
+        <dex dex="/Users/myron/AndroidStudioProjects/Flair/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-23.2.0_3e158bfb3d5bf502eb25c642e5a11f9baa4e8bca.jar" />
+    </item>
+
+</items>

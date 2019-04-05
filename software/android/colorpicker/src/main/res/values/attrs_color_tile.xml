@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ColorTile">
+        <attr name="CornerRounding" format="integer" />
+        <attr name="LockSquare" format="boolean" />
+        <attr name="IsSelected" format="boolean" />
+        <attr name="SampleColor" format="color" />
+        <attr name="SelectColor" format="color" />
+    </declare-styleable>
+</resources>
