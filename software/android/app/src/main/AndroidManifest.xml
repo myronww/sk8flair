@@ -2,38 +2,54 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.skateflair.flair">
 
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+    <!-- If your app targets Android 9 or lower, you can declare
+         ACCESS_COARSE_LOCATION instead. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".FlairActivity"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".FlairCreateGroupActivity"
-            android:label="@string/title_activity_flair_create_group"></activity>
-
-        <service android:name=".ServiceFlairController" />
-
-        <activity
             android:name=".FlairSettingsActivity"
-            android:label="@string/title_activity_flair_settings"
+            android:label="@string/action_settings"
             android:parentActivityName=".FlairActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.skateflair.flair.FlairActivity" />
         </activity>
-    </application>
+        <activity
+            android:name=".FlairCreateGroupActivity"
+            android:label="Create Group"
+            android:parentActivityName=".FlairActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.skateflair.flair.FlairActivity" />
 
+        </activity>
+        <service
+            android:name=".service.ServiceFlairController"
+            android:icon="@android:drawable/stat_notify_sync"
+            android:label="@string/ble_service_name"
+            >
+        </service>
+    </application>
 </manifest>

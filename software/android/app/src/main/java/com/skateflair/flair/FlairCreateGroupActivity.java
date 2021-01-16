@@ -10,6 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.skateflair.flair.datum.DatabaseHelperFlairDB;
+import com.skateflair.flair.datum.DatumFlairDevice;
+import com.skateflair.flair.datum.DatumFlairGroup;
+
 import java.util.ArrayList;
 
 public class FlairCreateGroupActivity extends Activity {

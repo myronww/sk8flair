@@ -1,7 +1,6 @@
 package com.skateflair.flair;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,11 +10,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+
+import com.skateflair.flair.datum.DatumFlairDevice;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,6 +46,7 @@ public class FlairBillboard extends Fragment {
     private DatumFlairDevice[] m_Devices;
     private Hashtable<String, FlairStatusView> m_DevicesViews;
 
+    private TextView m_TextView;
     private LinearLayout m_DeviceLayout;
 
     private FlairNotificationReceiver m_NotificationReceiver;
@@ -56,14 +62,14 @@ public class FlairBillboard extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
-            if (action.equals(FlairIntent.ACTIONS.SERVICE.DEVICE_CONNECTION_SUCCESS)) {
-                String dev_id = intent.getStringExtra(FlairIntent.PAYLOADS.FLAIR_DEVICE_ID);
+            if (action.equals(FlairConstants.ACTIONS.BILLBOARD.DEVICE_CONNECTION_SUCCESS)) {
+                String dev_id = intent.getStringExtra(FlairConstants.PAYLOADS.FLAIR_DEVICE_ID);
 
                 FlairStatusView sview = m_DevicesViews.get(dev_id);
                 sview.setFlairStatus(true);
             }
-            else if (action.equals(FlairIntent.ACTIONS.SERVICE.DEVICE_CONNECTION_FAILURE)) {
-                String dev_id = intent.getStringExtra(FlairIntent.PAYLOADS.FLAIR_DEVICE_ID);
+            else if (action.equals(FlairConstants.ACTIONS.BILLBOARD.DEVICE_CONNECTION_FAILURE)) {
+                String dev_id = intent.getStringExtra(FlairConstants.PAYLOADS.FLAIR_DEVICE_ID);
 
                 FlairStatusView sview = m_DevicesViews.get(dev_id);
                 sview.setFlairStatus(false);
@@ -117,6 +123,7 @@ public class FlairBillboard extends Fragment {
         // Inflate the layout for this fragment
         View fview = inflater.inflate(R.layout.fragment_flair_billboard, container, false);
 
+        m_TextView = (TextView)fview.findViewById(R.id.lblDeviceGroupName);
         m_DeviceLayout = (LinearLayout)fview.findViewById(R.id.layFlairListLayout);
 
         //Button sync_button = (Button)fview.findViewById(R.id.btnSync);
@@ -130,8 +137,8 @@ public class FlairBillboard extends Fragment {
 
         IntentFilter filter = new IntentFilter();
         filter.addCategory(Intent.CATEGORY_DEFAULT);
-        filter.addAction(FlairIntent.ACTIONS.SERVICE.DEVICE_CONNECTION_SUCCESS);
-        filter.addAction(FlairIntent.ACTIONS.SERVICE.DEVICE_CONNECTION_FAILURE);
+        filter.addAction(FlairConstants.ACTIONS.BILLBOARD.DEVICE_CONNECTION_SUCCESS);
+        filter.addAction(FlairConstants.ACTIONS.BILLBOARD.DEVICE_CONNECTION_FAILURE);
 
         Activity activity = getActivity();
         activity.registerReceiver(m_NotificationReceiver, filter);
@@ -144,13 +151,16 @@ public class FlairBillboard extends Fragment {
         super.onDetach();
     }
 
-    public void setFlairDevices(Collection<DatumFlairDevice> devices) {
+    public void setFlairGroupInfo(String groupName, Collection<DatumFlairDevice> devices) {
+        m_GroupName = groupName;
         m_Devices = devices.toArray(new DatumFlairDevice[devices.size()]);
 
         refresh_flair_devices();
     }
 
     private void refresh_flair_devices() {
+
+        m_TextView.setText(m_GroupName);
         m_DeviceLayout.removeAllViewsInLayout();
         m_DevicesViews.clear();
 
@@ -174,6 +184,12 @@ public class FlairBillboard extends Fragment {
     private Bitmap lookup_device_icon(DatumFlairDevice device) {
         Resources res = getResources();
 
-        return BitmapFactory.decodeResource(res, R.mipmap.ic_launcher);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inDensity = DisplayMetrics.DENSITY_XXHIGH; // whichever you want to load
+        options.inTargetDensity = getResources().getDisplayMetrics().densityDpi;
+        options.inScaled = true;
+
+        Bitmap dev_icon = BitmapFactory.decodeResource(res, R.mipmap.ic_launcher, options);
+        return dev_icon;
     }
 }

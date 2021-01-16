@@ -1,6 +1,6 @@
 package com.skateflair.gizmos;
 
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -9,12 +9,12 @@ import java.util.UUID;
  * Created by myron on 3/6/16.
  */
 public interface IGizmo {
-    public Fragment attachFullFragment();
-    public Fragment attachThumbFragment();
+    Fragment attachFullFragment();
+    Fragment attachThumbFragment();
 
-    public UUID getGizmoUUID();
-    public String getProfileName();
-    public String getProfileXML() throws GizmoProfileException;
-    public Serializable saveProfile();
-    public void restoreProfile(Serializable obj);
+    UUID getGizmoUUID();
+    String getProfileName();
+    String getProfileJSON() throws GizmoProfileException;
+    Serializable saveProfile();
+    void restoreProfile(Serializable obj);
 }

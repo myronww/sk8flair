@@ -1,14 +1,12 @@
 <resources>
     <string name="app_name">Flair</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_flair_create_group">Create Group</string>
     <string name="greater_than">&gt;</string>
     <string name="less_than">&lt;</string>
-    <string name="title_activity_flair_settings">Flair Settings</string>
-    <string name="title_flair_remote">Flair Remote</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="ble_not_supported">The \'Flair\' application requires Bluetooth Low Energe (BLE) support.</string>
+    <string name="ble_service_name">Flair BLE Service</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
 </resources>

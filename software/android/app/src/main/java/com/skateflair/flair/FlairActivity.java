@@ -1,33 +1,33 @@
 package com.skateflair.flair;
 
-import android.annotation.TargetApi;
+import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v13.app.FragmentStatePagerAdapter;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.PopupWindow;
-import android.widget.RemoteViews;
+import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.skateflair.flair.datum.DatabaseHelperFlairDB;
+import com.skateflair.flair.datum.DatumFlairDevice;
+import com.skateflair.flair.datum.DatumFlairGroup;
+import com.skateflair.flair.service.ServiceFlairController;
 import com.skateflair.gizmos.GizmoFactory;
 import com.skateflair.gizmos.GizmoProfileException;
 import com.skateflair.gizmos.IGizmo;
@@ -43,9 +43,25 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
-public class FlairActivity extends Activity implements IGizmoChangedListener {
+public class FlairActivity extends FragmentActivity implements IGizmoChangedListener {
 
-    public final String TAG = "FlairActivity";
+    public static final String TAG = "FlairActivity";
+
+    private Button m_BtnSync;
+    private Button m_BtnNavNext;
+    private Button m_BtnNavPrev;
+    private Button m_BtnSettings;
+
+    private FlairActivityIntentReceiver m_ActivityReceiver;
+    private DatabaseHelperFlairDB m_FlairData;
+
+    private FlairBillboard m_FlairBillboard;
+    private DatumFlairGroup m_FlairGroup;
+    private List<DatumFlairDevice> m_GroupMembers;
+
+    private IGizmo m_CurrentGizmo;
+
+    private boolean m_FirstStart = true;
 
     class FlairControlsPagerAdapter extends FragmentStatePagerAdapter {
 
@@ -61,13 +77,6 @@ public class FlairActivity extends Activity implements IGizmoChangedListener {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            super.destroyItem(container, position, object);
-
-            m_FragmentMap[position] = null;
-        }
-
-        @Override
-        public void destroyItem(View container, int position, Object object) {
             super.destroyItem(container, position, object);
 
             m_FragmentMap[position] = null;
@@ -98,151 +107,59 @@ public class FlairActivity extends Activity implements IGizmoChangedListener {
     private FlairControlsPagerAdapter m_FragmentAdapter;
     private ViewPager m_FragmentPager;
 
-    private BluetoothAdapter m_BluetoothAdapter;
-
-    private DatabaseHelperFlairDB m_FlairData;
-
-    private DatumFlairGroup m_FlairGroup;
-    private List<DatumFlairDevice> m_GroupMembers;
-
-    private boolean m_FirstStart = true;
-
-    private FlairBillboard m_FlairBillboard;
-
-    private Button m_BtnSync;
-    private Button m_BtnNavNext;
-    private Button m_BtnNavPrev;
-    private Button m_BtnSettings;
-
-    private IGizmo m_CurrentGizmo;
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
-            case FlairConstants.Activities.ACTIVITY_BLUETOOTH_ERROR_MESSAGE:
-                finish();
-                break;
-            case FlairConstants.Activities.ACTIVITY_CREATE_FLAIR_GROUP:
-                if (resultCode != Activity.RESULT_OK) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Flair Group Error");
-                    builder.setMessage("You must create at lease one flair group to enable the applications functionality.");
-                    builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            refresh_active_flair_group();
-                        }
-                    });
-                    builder.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                            finish();
-                        }
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                }
-                break;
-            case FlairConstants.Activities.ACTIVITY_REQUEST_BLUETOOTH_ENABLE:
-                if (resultCode != Activity.RESULT_OK) {
-                    AlertDialog dialog = new AlertDialog.Builder(this)
-                            .setTitle("Bluetooth Error")
-                            .setMessage("Bluetooth must be enabled for 'Sk8Flair' run.")
-                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }})
-                            .create();
-                    dialog.show();
-                    finish();
-                }
-                break;
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flair);
 
-        m_FragmentAdapter = new FlairControlsPagerAdapter(getFragmentManager());
-        m_FragmentPager = (ViewPager)findViewById(R.id.vpControlsPager);
-        m_FragmentPager.setAdapter(m_FragmentAdapter);
+        // Use this check to determine whether BLE is supported on the device. Then
+        // you can selectively disable BLE-related features.
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
-        m_BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (m_BluetoothAdapter == null) {
-            error_bluetooth_adapter_error();
+        // We have to make sure to request location permissions for BLE discovery to work
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED){
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)){
+                Toast.makeText(this, "The permission to get BLE location data is required", Toast.LENGTH_SHORT).show();
+            }else{
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            }
+        }else{
+            Toast.makeText(this, "Location permissions already granted", Toast.LENGTH_SHORT).show();
         }
 
         m_FlairData = new DatabaseHelperFlairDB(this);
 
-        m_FlairBillboard = (FlairBillboard)getFragmentManager().findFragmentById(R.id.fragFlairBillboard);
+        Intent start_service_intent = new Intent(FlairActivity.this, ServiceFlairController.class);
+        startService(start_service_intent);
+
+        // Create an activity receiver so we can receive responses from the Flair Service
+        m_ActivityReceiver = new FlairActivityIntentReceiver();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        filter.addAction(FlairConstants.ACTIONS.ACTIVITY.UPDATE_CONNECTED_DEVICES);
+
+        registerReceiver(m_ActivityReceiver, filter);
+
+        m_BtnSettings = (Button)findViewById(R.id.btnSettings);
+        m_BtnSettings.setOnClickListener(onButtonSettingsClick);
 
         m_BtnSync = (Button)findViewById(R.id.btnSync);
-        m_BtnSync.setEnabled(false);
         m_BtnSync.setOnClickListener(onButtonSyncClick);
-
-        m_BtnNavPrev = (Button)findViewById(R.id.btnNavPrev);
-        m_BtnNavPrev.setOnClickListener(onButtonNavPrevClick);
 
         m_BtnNavNext = (Button)findViewById(R.id.btnNavNext);
         m_BtnNavNext.setOnClickListener(onButtonNavNextClick);
 
-        m_BtnSettings = (Button)findViewById(R.id.btnSettings);
-        m_BtnSettings.setOnClickListener(onButtonSettingsClick);
-    }
+        m_BtnNavPrev = (Button)findViewById(R.id.btnNavPrev);
+        m_BtnNavPrev.setOnClickListener(onButtonNavPrevClick);
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        //remote_hide_notification();
-
-        stopService(new Intent(this, ServiceFlairController.class));
-    }
-
-    @Override
-    public void onGizmoActivate(IGizmo gizmo) {
-
-        m_CurrentGizmo = gizmo;
-
-        String profile_name = gizmo.getProfileName();
-
-        Intent time_sync_intent = new Intent();
-        time_sync_intent.setAction(FlairIntent.ACTIONS.SERVICE.FLAIR_SYNC_TIME);
-        time_sync_intent.addCategory(Intent.CATEGORY_DEFAULT);
-        sendBroadcast(time_sync_intent);
-
-        Intent profile_sw_intent = new Intent();
-        profile_sw_intent.setAction(FlairIntent.ACTIONS.SERVICE.FLAIR_PROFILE_CHANGE);
-        profile_sw_intent.addCategory(Intent.CATEGORY_DEFAULT);
-        profile_sw_intent.putExtra(FlairIntent.PAYLOADS.FLAIR_PROFILE_NAME, profile_name);
-
-        sendBroadcast(profile_sw_intent);
-    }
-
-    @Override
-    public void onGizmoDirty(IGizmo gizmo) {
-        m_BtnSync.setEnabled(true);
-    }
-
-
-    @Override
-    public void onGizmoLoad(IGizmo gizmo)
-    {
-        String group_name = m_FlairGroup.getName();
-        UUID gizmo_uuid = gizmo.getGizmoUUID();
-
-        String gizmo_state = m_FlairData.GizmoState_Select(gizmo_uuid, group_name);
-        if (gizmo_state != null) {
-            Serializable state_obj = deserialize_object(gizmo_state);
-            if (state_obj != null) {
-                gizmo.restoreProfile(state_obj);
-            }
-        }
+        m_FragmentAdapter = new FlairControlsPagerAdapter(this.getSupportFragmentManager());
+        m_FragmentPager = (ViewPager)findViewById(R.id.vpControlsPager);
+        m_FragmentPager.setAdapter(m_FragmentAdapter);
     }
 
     @Override
@@ -253,17 +170,16 @@ public class FlairActivity extends Activity implements IGizmoChangedListener {
             m_FirstStart = false;
 
             refresh_active_flair_group();
-
-            //remote_show_notification();
         }
     }
 
     private void refresh_active_flair_group() {
+
         List<DatumFlairGroup> active_group_list = m_FlairData.FlairGroup_Select_Active();
         if (active_group_list.size() <= 0) {
             Intent activityIntent = new Intent(this, FlairCreateGroupActivity.class);
 
-            startActivityForResult(activityIntent, FlairConstants.Activities.ACTIVITY_CREATE_FLAIR_GROUP);
+            startActivityForResult(activityIntent, FlairConstants.ACTIVITIES.ACTIVITY_CREATE_FLAIR_GROUP);
         }
         else {
             m_FlairData.Trace_Devices();
@@ -278,227 +194,25 @@ public class FlairActivity extends Activity implements IGizmoChangedListener {
             w.setTitle(new_title);
             this.setTitle(new_title);
 
-            Intent connect_devices_intent = new Intent(FlairIntent.ACTIONS.SERVICE.CONNECT_DEVICES, null, this, ServiceFlairController.class);
-            connect_devices_intent.putExtra(FlairIntent.PAYLOADS.FLAIR_GROUP_DEVICES, m_GroupMembers.toArray(new Parcelable[m_GroupMembers.size()]));
+            m_FlairBillboard = (FlairBillboard)getSupportFragmentManager().findFragmentById(R.id.fragFlairBillboard);
+            m_FlairBillboard.setFlairGroupInfo(m_FlairGroup.getName(), m_GroupMembers);
 
-            m_FlairBillboard.setFlairDevices(m_GroupMembers);
+            Intent update_connected_intent = new Intent(FlairConstants.ACTIONS.ACTIVITY.UPDATE_CONNECTED_DEVICES);
+            sendBroadcast(update_connected_intent);
 
-            startService(connect_devices_intent);
+            Log.i(TAG, "Connect Devices intent sent to the Flair Service.");
         }
     }
 
-    private void error_bluetooth_adapter_error()
-    {
-        LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        View bt_error_popup = layoutInflater.inflate(R.layout.activity_bluetooth_initialize_error, null);
-
-        final PopupWindow popupWindow = new PopupWindow(bt_error_popup,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        Button btnDismiss = (Button)bt_error_popup.findViewById(R.id.btnExit);
-        btnDismiss.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                popupWindow.dismiss();
-            }});
-
-        popupWindow.showAsDropDown(bt_error_popup);
-
-        finish();
-    }
-
-    private Serializable deserialize_object(String content) {
-        Serializable sobj = null;
-
-        ByteArrayInputStream instream = new ByteArrayInputStream(content.getBytes());
-        try {
-            ObjectInputStream ois = new ObjectInputStream(instream);
-            try {
-                sobj = (Serializable) ois.readObject();
-            }
-            finally {
-                ois.close();
-            }
-        } catch (ClassNotFoundException xcp) {
-            Log.e(TAG, xcp.toString());
-        } catch (IOException xcp) {
-            Log.e(TAG, xcp.toString());
-        }
-
-        return sobj;
-    }
-
-    protected void remote_hide_notification() {
-        NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationmanager.cancel(FlairConstants.Activities.ACTIVITY_REMOTE_SCREENLOCK_CONTROL);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    protected void remote_show_notification() {
-
-        // Set Notification Title
-        String remote_title = getString(R.string.title_flair_remote);
-
-        Context context = FlairActivity.this;
-
-        //PendingIntent activityPendingIntent = getActivityPendingIntent();
-        //Intent not_intent = new Intent(context, FlairRemoteActivity.class);
-        // Send data to NotificationView Class
-        //not_intent.putExtra("title", remote_title);
-        //not_intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-        // Open NotificationView.java Activity
-        //PendingIntent pIntent = PendingIntent.getActivity(
-        //        FlairActivity.this,
-        //        FlairConstants.Activities.ACTIVITY_REMOTE_SCREENLOCK_CONTROL,
-        //        not_intent,
-        //        PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-
-        //Notifications must have these three
-        builder.setSmallIcon(R.mipmap.ic_launcher);
-
-        // Using RemoteViews to bind custom layouts into Notification
-        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.view_flair_remote);
-
-        // Locate and set the Image into customnotificationtext.xml ImageViews
-        remoteViews.setImageViewResource(R.id.imageNotifLeft, R.mipmap.ic_launcher);
-
-        // Locate and set the Text into customnotificationtext.xml TextViews
-        remoteViews.setTextViewText(R.id.lbltitle, getString(R.string.title_flair_remote));
-
-        builder.setContent(remoteViews);
-
-        builder.setCategory(Notification.CATEGORY_SERVICE);
-
-        // Make sure the notification stays at the top of the list
-        builder.setPriority(Notification.PRIORITY_MAX);
-
-        // Moke sure the notification cannot be swipped away
-        builder.setOngoing(true);
-
-        // Open NotificationView Class on Notification Click
-
-        // Open NotificationView.java Activity
-        //PendingIntent pIntent = PendingIntent.getActivity(
-        //        FlairActivity.this,
-        //        FlairConstants.Activities.ACTIVITY_REMOTE_SCREENLOCK_CONTROL,
-        //        not_intent,
-        //        PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-        //builder.setContentTitle(strtitle);
-        //builder.setContentText("Solid");
-
-        // Set the notification content
-        //builder.setContent(remoteViews);
-
-        //builder.setContentIntent(pIntent);
-        // Set Icon
-
-        //builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-
-        // Set Ticker Message
-        //builder.setTicker(context.getString(R.string.app_name));
-
-        // Dismiss Notification
-        //
-
-        Notification notification = builder.build();
-
-        notification.bigContentView = remoteViews;
-
-        NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        // Build Notification with Notification Manager
-        notificationmanager.notify(FlairConstants.Activities.ACTIVITY_REMOTE_SCREENLOCK_CONTROL, notification);
-    }
-
-    private String serialize_object(Serializable sobj) {
-        String content = null;
-
-        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(ostream);
-            try {
-                oos.writeObject(sobj);
-            } finally {
-                oos.close();
-            }
-            ostream.reset();
-            content = ostream.toString("UTF-8");
-        }
-        catch (IOException xcp) {
-            Log.e(TAG, xcp.toString());
-        }
-
-        return content;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_flair, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private Button.OnClickListener onButtonSyncClick = new Button.OnClickListener() {
+    private Button.OnClickListener onButtonSettingsClick = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            int index = m_FragmentPager.getCurrentItem();
-            FlairControlsPagerAdapter adapter = (FlairControlsPagerAdapter)m_FragmentPager.getAdapter();
 
-            try {
-                IGizmoFragment curr_gizmo_frag = (IGizmoFragment)adapter.getFragment(index);
-                IGizmo curr_gizmo = curr_gizmo_frag.getGizmo();
-                String profile_name = curr_gizmo.getProfileName();
-                String profile_content = curr_gizmo.getProfileXML();
-
-                Intent time_sync_intent = new Intent();
-                time_sync_intent.setAction(FlairIntent.ACTIONS.SERVICE.FLAIR_SYNC_TIME);
-                time_sync_intent.addCategory(Intent.CATEGORY_DEFAULT);
-                sendBroadcast(time_sync_intent);
-
-                Intent profile_sync_intent = new Intent();
-                profile_sync_intent.setAction(FlairIntent.ACTIONS.SERVICE.FLAIR_PROFILE_UPDATE);
-                profile_sync_intent.addCategory(Intent.CATEGORY_DEFAULT);
-                profile_sync_intent.putExtra(FlairIntent.PAYLOADS.FLAIR_PROFILE_NAME, profile_name);
-                profile_sync_intent.putExtra(FlairIntent.PAYLOADS.FLAIR_PROFILE_CONTENT, profile_content);
-                profile_sync_intent.putExtra(FlairIntent.PAYLOADS.FLAIR_PROFILE_SWITCH, true);
-
-                sendBroadcast(profile_sync_intent);
-
-                Serializable sobj = curr_gizmo.saveProfile();
-                if (sobj != null) {
-                    String content = serialize_object(sobj);
-                    if (content != null) {
-                        UUID gizmo_uuid = curr_gizmo.getGizmoUUID();
-                        String group_name = m_FlairGroup.getName();
-                        m_FlairData.GizmoState_Insert_Or_Update(gizmo_uuid, group_name, content);
-                    }
-                }
-            }
-            catch(GizmoProfileException xcpt) {
-            }
-
+            //TODO: Implement the listener for the settings button
+            // Intent start_scan_intent = new Intent();
+            // start_scan_intent.setAction(FlairConstants.ACTIONS.SERVICE.SCAN_START);
+            // start_scan_intent.addCategory(Intent.CATEGORY_DEFAULT);
+            // sendBroadcast(start_scan_intent);
         }
     };
 
@@ -526,10 +240,146 @@ public class FlairActivity extends Activity implements IGizmoChangedListener {
         }
     };
 
-    private Button.OnClickListener onButtonSettingsClick = new Button.OnClickListener() {
+    private Button.OnClickListener onButtonSyncClick = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            //TODO: Implement the listener for the settings button
+            int index = m_FragmentPager.getCurrentItem();
+            FlairControlsPagerAdapter adapter = (FlairControlsPagerAdapter)m_FragmentPager.getAdapter();
+
+            try {
+                IGizmoFragment curr_gizmo_frag = (IGizmoFragment)adapter.getFragment(index);
+                IGizmo curr_gizmo = curr_gizmo_frag.getGizmo();
+                String profile_name = curr_gizmo.getProfileName();
+                String profile_content = curr_gizmo.getProfileJSON();
+
+                Intent time_sync_intent = new Intent();
+                time_sync_intent.setAction(FlairConstants.ACTIONS.SERVICE.FLAIR_SYNC_TIME);
+                time_sync_intent.addCategory(Intent.CATEGORY_DEFAULT);
+                sendBroadcast(time_sync_intent);
+
+                Intent profile_sync_intent = new Intent();
+                profile_sync_intent.setAction(FlairConstants.ACTIONS.SERVICE.FLAIR_PROFILE_UPDATE);
+                profile_sync_intent.addCategory(Intent.CATEGORY_DEFAULT);
+                profile_sync_intent.putExtra(FlairConstants.PAYLOADS.FLAIR_PROFILE_NAME, profile_name);
+                profile_sync_intent.putExtra(FlairConstants.PAYLOADS.FLAIR_PROFILE_CONTENT, profile_content);
+                profile_sync_intent.putExtra(FlairConstants.PAYLOADS.FLAIR_PROFILE_SWITCH, true);
+
+                sendBroadcast(profile_sync_intent);
+
+                Serializable sobj = curr_gizmo.saveProfile();
+                if (sobj != null) {
+                    String content = serialize_object(sobj);
+                    if (content != null) {
+                        UUID gizmo_uuid = curr_gizmo.getGizmoUUID();
+                        String group_name = m_FlairGroup.getName();
+                        m_FlairData.GizmoState_Insert_Or_Update(gizmo_uuid, group_name, content);
+                    }
+                }
+            }
+            catch(GizmoProfileException xcpt) {
+            }
+
         }
     };
+
+    @Override
+    public void onGizmoActivate(IGizmo gizmo) {
+
+        m_CurrentGizmo = gizmo;
+
+        String profile_name = gizmo.getProfileName();
+
+        Intent profile_sw_intent = new Intent();
+        profile_sw_intent.setAction(FlairConstants.ACTIONS.SERVICE.FLAIR_PROFILE_CHANGE);
+        profile_sw_intent.addCategory(Intent.CATEGORY_DEFAULT);
+        profile_sw_intent.putExtra(FlairConstants.PAYLOADS.FLAIR_PROFILE_NAME, profile_name);
+
+        sendBroadcast(profile_sw_intent);
+    }
+
+    @Override
+    public void onGizmoDirty(IGizmo gizmo) {
+        m_BtnSync.setEnabled(true);
+    }
+
+
+    @Override
+    public void onGizmoLoad(IGizmo gizmo)
+    {
+        String group_name = m_FlairGroup.getName();
+        UUID gizmo_uuid = gizmo.getGizmoUUID();
+
+        String gizmo_state = m_FlairData.GizmoState_Select(gizmo_uuid, group_name);
+        if (gizmo_state != null) {
+            Serializable state_obj = deserialize_object(gizmo_state);
+            if (state_obj != null) {
+                gizmo.restoreProfile(state_obj);
+            }
+        }
+    }
+
+    private Serializable deserialize_object(String content) {
+        Serializable sobj = null;
+
+        ByteArrayInputStream instream = new ByteArrayInputStream(content.getBytes());
+        try {
+            ObjectInputStream ois = new ObjectInputStream(instream);
+            try {
+                sobj = (Serializable) ois.readObject();
+            }
+            finally {
+                ois.close();
+            }
+        } catch (ClassNotFoundException xcp) {
+            Log.e(TAG, xcp.toString());
+        } catch (IOException xcp) {
+            Log.e(TAG, xcp.toString());
+        }
+
+        return sobj;
+    }
+
+    private String serialize_object(Serializable sobj) {
+        String content = null;
+
+        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(ostream);
+            try {
+                oos.writeObject(sobj);
+            } finally {
+                oos.close();
+            }
+            ostream.reset();
+            content = ostream.toString("UTF-8");
+        }
+        catch (IOException xcp) {
+            Log.e(TAG, xcp.toString());
+        }
+
+        return content;
+    }
+
+    public class FlairActivityIntentReceiver extends BroadcastReceiver {
+
+        public static final String TAG = "FlairActIntentReceiver";
+
+        public FlairActivityIntentReceiver() {
+
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            Log.d(TAG, "Processing command '" + action + "'...");
+
+            if (action.equals(FlairConstants.ACTIONS.ACTIVITY.UPDATE_CONNECTED_DEVICES)) {
+                Intent connect_devices_intent = new Intent(FlairConstants.ACTIONS.SERVICE.CONNECT_DEVICES);
+                connect_devices_intent.addCategory(Intent.CATEGORY_DEFAULT);
+                connect_devices_intent.putExtra(FlairConstants.PAYLOADS.FLAIR_GROUP_DEVICES, m_GroupMembers.toArray(new Parcelable[m_GroupMembers.size()]));
+                sendBroadcast(connect_devices_intent);
+            }
+        }
+    }
 }

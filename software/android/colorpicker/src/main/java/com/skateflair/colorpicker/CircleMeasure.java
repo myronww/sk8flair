@@ -52,13 +52,14 @@ public class CircleMeasure {
     }
 
     public PointF CalculateCoordinateUsingDegrees(float angleDegrees) {
+
         float ix = 0.0f;
         float iy = 0.0f;
 
         double angleRadians = Math.toRadians(angleDegrees);
 
-        ix = ((float)Math.cos(angleRadians) * m_Radius) + m_CenterX;
-        iy = ((float)Math.sin(angleRadians) * m_Radius) + m_CenterY;
+        ix = m_CenterX + ((float) Math.cos(angleRadians) * m_Radius);
+        iy = m_CenterY + ((float) Math.sin(angleRadians) * m_Radius);
 
         PointF interceptPoint = new PointF(ix, iy);
 

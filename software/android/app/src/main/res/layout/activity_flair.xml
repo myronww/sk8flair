@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FlairActivity">
+    tools:context=".FlairActivity"
+    android:background="@android:color/black">
 
 
     <RelativeLayout
@@ -10,16 +11,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:background="@android:color/black">
+
         <Button
             android:id="@+id/btnSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:background="@drawable/button_sync_selector"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="SETTINGS"
             android:textColor="@color/white"
-            android:textSize="10pt"
-            android:text="SETTINGS"/>
+            android:textSize="10pt" />
         <fragment
             android:name="com.skateflair.flair.FlairBillboard"
             tools:layout="@layout/fragment_flair_billboard"
@@ -82,7 +87,7 @@
 
     <com.skateflair.flair.FlairGizmoViewPager
         android:id="@+id/vpControlsPager"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/layActivityHeader"
         android:layout_above="@id/layActivityFooter"
@@ -90,7 +95,5 @@
         android:layout_marginTop="10dp"
         android:background="@color/flair_group_background"
         />
-
-
 
 </RelativeLayout>

@@ -1,1 +1,1 @@
-include ':app', ':library', ':colorpicker', ':gizmos'
+include ':app', ':gizmos', ':colorpicker'

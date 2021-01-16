@@ -103,12 +103,6 @@ public class ColorPickerView extends LinearLayout implements IOnColorSelectedLis
         inflate(context, R.layout.view_color_picker, this);
     }
 
-    public ColorPickerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-
-        inflate(context, R.layout.view_color_picker, this);
-    }
-
     public void addOnColorSelectedListener(IOnColorSelectedListener listener) {
         this.m_ColorChangeListeners.add(listener);
     }

@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.skateflair.flair.datum.DatumFlairDevice;
+
 import java.util.List;
 
 /**

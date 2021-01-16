@@ -1,12 +1,11 @@
 package com.skateflair.colorpicker;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.graphics.Shader;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -61,7 +60,6 @@ public class ColorPaletteView extends View {
 
     public static final double PIDOUBLE = Math.PI * 2;
 
-    final protected Paint m_ColorBandPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     final protected Paint m_BlackoutPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     final protected Paint m_WhiteoutPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     final protected Paint m_HuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -70,6 +68,8 @@ public class ColorPaletteView extends View {
     final protected Paint m_ColorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     final protected Paint m_TestPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    final protected Paint m_BitmapPaint = new Paint(Paint.DITHER_FLAG);
 
     final protected float m_GradientPositions[] = {
             0.000000f, 0.200000f, 0.203162f, 0.206324f, 0.209486f,
@@ -126,11 +126,47 @@ public class ColorPaletteView extends View {
 
     };
 
+    final protected int m_GrayScaleColors[] = {
+            0xff000000, 0xff010101, 0xff020202, 0xff030303, 0xff040404, 0xff050505, 0xff060606, 0xff070707,
+            0xff080808, 0xff090909, 0xff0a0a0a, 0xff0b0b0b, 0xff0c0c0c, 0xff0d0d0d, 0xff0e0e0e, 0xff0f0f0f,
+            0xff101010, 0xff111111, 0xff121212, 0xff131313, 0xff141414, 0xff151515, 0xff161616, 0xff171717,
+            0xff181818, 0xff191919, 0xff1a1a1a, 0xff1b1b1b, 0xff1c1c1c, 0xff1d1d1d, 0xff1e1e1e, 0xff1f1f1f,
+            0xff202020, 0xff212121, 0xff222222, 0xff232323, 0xff242424, 0xff252525, 0xff262626, 0xff272727,
+            0xff282828, 0xff292929, 0xff2a2a2a, 0xff2b2b2b, 0xff2c2c2c, 0xff2d2d2d, 0xff2e2e2e, 0xff2f2f2f,
+            0xff303030, 0xff313131, 0xff323232, 0xff333333, 0xff343434, 0xff353535, 0xff363636, 0xff373737,
+            0xff383838, 0xff393939, 0xff3a3a3a, 0xff3b3b3b, 0xff3c3c3c, 0xff3d3d3d, 0xff3e3e3e, 0xff3f3f3f,
+            0xff404040, 0xff414141, 0xff424242, 0xff434343, 0xff444444, 0xff454545, 0xff464646, 0xff474747,
+            0xff484848, 0xff494949, 0xff4a4a4a, 0xff4b4b4b, 0xff4c4c4c, 0xff4d4d4d, 0xff4e4e4e, 0xff4f4f4f,
+            0xff505050, 0xff515151, 0xff525252, 0xff535353, 0xff545454, 0xff555555, 0xff565656, 0xff575757,
+            0xff585858, 0xff595959, 0xff5a5a5a, 0xff5b5b5b, 0xff5c5c5c, 0xff5d5d5d, 0xff5e5e5e, 0xff5f5f5f,
+            0xff606060, 0xff616161, 0xff626262, 0xff636363, 0xff646464, 0xff656565, 0xff666666, 0xff676767,
+            0xff686868, 0xff696969, 0xff6a6a6a, 0xff6b6b6b, 0xff6c6c6c, 0xff6d6d6d, 0xff6e6e6e, 0xff6f6f6f,
+            0xff707070, 0xff717171, 0xff727272, 0xff737373, 0xff747474, 0xff757575, 0xff767676, 0xff777777,
+            0xff787878, 0xff797979, 0xff7a7a7a, 0xff7b7b7b, 0xff7c7c7c, 0xff7d7d7d, 0xff7e7e7e, 0xff7f7f7f,
+            0xff808080, 0xff818181, 0xff828282, 0xff838383, 0xff848484, 0xff858585, 0xff868686, 0xff878787,
+            0xff888888, 0xff898989, 0xff8a8a8a, 0xff8b8b8b, 0xff8c8c8c, 0xff8d8d8d, 0xff8e8e8e, 0xff8f8f8f,
+            0xff909090, 0xff919191, 0xff929292, 0xff939393, 0xff949494, 0xff959595, 0xff969696, 0xff979797,
+            0xff989898, 0xff999999, 0xff9a9a9a, 0xff9b9b9b, 0xff9c9c9c, 0xff9d9d9d, 0xff9e9e9e, 0xff9f9f9f,
+            0xffa0a0a0, 0xffa1a1a1, 0xffa2a2a2, 0xffa3a3a3, 0xffa4a4a4, 0xffa5a5a5, 0xffa6a6a6, 0xffa7a7a7,
+            0xffa8a8a8, 0xffa9a9a9, 0xffaaaaaa, 0xffababab, 0xffacacac, 0xffadadad, 0xffaeaeae, 0xffafafaf,
+            0xffb0b0b0, 0xffb1b1b1, 0xffb2b2b2, 0xffb3b3b3, 0xffb4b4b4, 0xffb5b5b5, 0xffb6b6b6, 0xffb7b7b7,
+            0xffb8b8b8, 0xffb9b9b9, 0xffbababa, 0xffbbbbbb, 0xffbcbcbc, 0xffbdbdbd, 0xffbebebe, 0xffbfbfbf,
+            0xffc0c0c0, 0xffc1c1c1, 0xffc2c2c2, 0xffc3c3c3, 0xffc4c4c4, 0xffc5c5c5, 0xffc6c6c6, 0xffc7c7c7,
+            0xffc8c8c8, 0xffc9c9c9, 0xffcacaca, 0xffcbcbcb, 0xffcccccc, 0xffcdcdcd, 0xffcecece, 0xffcfcfcf,
+            0xffd0d0d0, 0xffd1d1d1, 0xffd2d2d2, 0xffd3d3d3, 0xffd4d4d4, 0xffd5d5d5, 0xffd6d6d6, 0xffd7d7d7,
+            0xffd8d8d8, 0xffd9d9d9, 0xffdadada, 0xffdbdbdb, 0xffdcdcdc, 0xffdddddd, 0xffdedede, 0xffdfdfdf,
+            0xffe0e0e0, 0xffe1e1e1, 0xffe2e2e2, 0xffe3e3e3, 0xffe4e4e4, 0xffe5e5e5, 0xffe6e6e6, 0xffe7e7e7,
+            0xffe8e8e8, 0xffe9e9e9, 0xffeaeaea, 0xffebebeb, 0xffececec, 0xffededed, 0xffeeeeee, 0xffefefef,
+            0xfff0f0f0, 0xfff1f1f1, 0xfff2f2f2, 0xfff3f3f3, 0xfff4f4f4, 0xfff5f5f5, 0xfff6f6f6, 0xfff7f7f7,
+            0xfff8f8f8, 0xfff9f9f9, 0xfffafafa, 0xfffbfbfb, 0xfffcfcfc, 0xfffdfdfd, 0xfffefefe, 0xffffffff
+    };
+
     private int p_ColorSelected;
     private float p_HueCursorAngle;
     private float p_ShadeCursorAngle;
 
     private RectF m_PalletRect = null;
+    private RectF m_ShadeRect = null;
 
     private float m_CenterY;
     private float m_CenterX;
@@ -138,9 +174,8 @@ public class ColorPaletteView extends View {
     private float m_BandWidth;
     private float m_BandHalfWidth;
 
-    private float m_ColorCursorX;
-    private float m_ColorCursorY;
-    private float m_ColorDotRadius;
+    private Bitmap m_ColorHueBitmap;
+    private Canvas m_ColorHueCanvas;
 
     private float m_HueCursorRadius;
     private float m_HueCursorLineWidth;
@@ -155,32 +190,29 @@ public class ColorPaletteView extends View {
     private float m_HueCursorX;
     private float m_HueCursorY;
 
-    private float m_ShadeCursorExtent;
+    private Bitmap m_ColorShadeBitmap;
+    private Canvas m_ColorShadeCanvas;
+
+    private CircleMeasure m_ShadeOuterMeasure;
+    private CircleMeasure m_ShadeMiddleMeasure;
+    private CircleMeasure m_ShadeInnerMeasure;
+
     private float m_ShadeCursorRadius;
     private float m_ShadeCursorX;
     private float m_ShadeCursorY;
 
-    private float m_BlackoutTailX;
-    private float m_BlackoutTailY;
-    private float m_BlackoutScaler;
-    private float m_BlackoutTailAngle;
+    private float m_ShadeMiddleRadius;
+    private float m_ShadeInnerRadius;
+    private float m_ShadeOuterRadius;
+    private float m_ShadeLowerBoundAngle;
+    private float m_ShadeUpperBoundAngle;
 
-    private float m_CommonHeadX;
-    private float m_CommonHeadY;
+    private boolean m_SetColor;
 
-    private float m_WhiteoutTailX;
-    private float m_WhiteoutTailY;
-    private float m_WhiteoutScaler;
-    private float m_WhiteoutTailAngle;
-
-    private TouchLine m_BlackoutMeasure;
-    private TouchLine m_WhiteoutMeasure;
-
-    private float m_VarBandMiddleRadius;
-
-    private int mActivePointerId;
+    private int m_ActivePointerId;
 
     private ColorMap1440 m_ColorMap;
+
 
     private ArrayList<IOnColorSelectedListener> m_ColorChangeListeners = new ArrayList<IOnColorSelectedListener>();
 
@@ -210,25 +242,18 @@ public class ColorPaletteView extends View {
 
 
     private void init() {
-        mActivePointerId = MotionEvent.INVALID_POINTER_ID;
+        m_SetColor = false;
+
+        m_ActivePointerId = MotionEvent.INVALID_POINTER_ID;
 
         p_HueCursorAngle = 0.0f;
         p_ShadeCursorAngle = 0.0f;
 
-        m_BlackoutScaler = -1.0f;
-        m_WhiteoutScaler = -1.0f;
-
-        // Calculate Initial Layout Angles
-        m_BlackoutTailAngle = (p_HueCursorAngle + 120.0f) % 360.0f;
-        m_WhiteoutTailAngle = (p_HueCursorAngle + 240.0f) % 360.0f;
-
         m_HueCursorLineWidth = 20.0f;
-
 
         m_ColorMap = new ColorMap1440();
         m_ColorMap.setHueAngleDegrees(p_HueCursorAngle);
 
-        m_ColorBandPaint.setStyle(Paint.Style.STROKE);
         m_ColorPaint.setStyle(Paint.Style.FILL);
 
         m_BlackoutPaint.setStyle(Paint.Style.STROKE);
@@ -266,6 +291,7 @@ public class ColorPaletteView extends View {
     }
 
     public void setPaletteParameters(int selectedColor, float hueAngle, float shadeAngle) {
+        m_SetColor = true;
         p_ColorSelected = selectedColor;
 
         recalculate_hue_position_from_angle(hueAngle);
@@ -277,57 +303,136 @@ public class ColorPaletteView extends View {
         this.m_ColorChangeListeners.add(listener);
     }
 
-    @Override
-    public void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-
-        recalculate_layout_and_bands(w, h);
-
-        recalculate_palette_xy_coordinates_touchlines();
-
-        recalculate_hue_position_from_angle(this.p_HueCursorAngle);
-
-        recalculate_shade_position_from_angle(this.p_ShadeCursorAngle);
-
-        update_drawing_paints_and_shaders();
-
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+    public void recalculate_color_section_band() {
+        // Draw the offscreen bitmap for the color selection band
+        Paint colorBandPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        colorBandPaint.setStyle(Paint.Style.STROKE);
+        colorBandPaint.setStrokeWidth(m_BandWidth);
 
         int[] color_table = m_ColorMap.getPrimaryHueColorTable();
 
         float rad_next = 0;
         for (int ci_next = 0; ci_next < ColorMap1440.STEP_COUNT; ci_next += 1) {
             int color_int = color_table[ci_next];
-            m_ColorBandPaint.setColor(color_int);
+            colorBandPaint.setColor(color_int);
 
             float rad_next_end = rad_next + ColorMap1440.DEGREES_PER_STEP;
 
-            canvas.drawArc(m_PalletRect, rad_next, ColorMap1440.DEGREES_PER_STEP, false, m_ColorBandPaint);
+            m_ColorHueCanvas.drawArc(m_PalletRect, rad_next, ColorMap1440.DEGREES_PER_STEP, false, colorBandPaint);
+
+            rad_next = rad_next_end;
+        }
+    }
+
+    public void recalculate_color_shade_band() {
+        // Draw the offscreen bitmap for the color selection band
+        Paint colorBandPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        colorBandPaint.setStyle(Paint.Style.STROKE);
+        colorBandPaint.setStrokeWidth(m_BandHalfWidth);
+
+        int[] black_color_table = m_ColorMap.getBlackoutColorTable();
+        int[] white_color_table = m_ColorMap.getWhiteoutColorTable();
+
+        int blackout_len = black_color_table.length;
+        int whiteout_len = white_color_table.length;
+
+        float rndRadius = m_BandHalfWidth * 0.5f;
+        float blackRefAngle =  360.0f - ((float)blackout_len * ColorMap1440.DEGREES_PER_STEP);
+        int color_int = black_color_table[blackout_len - 1];
+        colorBandPaint.setColor(color_int);
+        PointF lowerRndPos = m_ShadeMiddleMeasure.CalculateCoordinateUsingDegrees(blackRefAngle);
+        m_ColorShadeCanvas.drawCircle(lowerRndPos.x, lowerRndPos.y, rndRadius, colorBandPaint);
+
+        m_ShadeLowerBoundAngle = blackRefAngle - 180.0f;
+
+        float whiteRefAngle = ((float)whiteout_len * ColorMap1440.DEGREES_PER_STEP);
+        color_int = white_color_table[whiteout_len - 1];
+        colorBandPaint.setColor(color_int);
+        PointF upperRndPos = m_ShadeMiddleMeasure.CalculateCoordinateUsingDegrees(whiteRefAngle);
+        m_ColorShadeCanvas.drawCircle(upperRndPos.x, upperRndPos.y, rndRadius, colorBandPaint);
+
+        m_ShadeUpperBoundAngle = 180.0f + whiteRefAngle;
+
+        colorBandPaint.setStrokeWidth(m_BandWidth);
+
+        float rad_next = 0;
+        for (int ci_next = 0; ci_next < blackout_len; ci_next += 1) {
+            color_int = black_color_table[ci_next];
+            colorBandPaint.setColor(color_int);
+
+            float rad_next_end = rad_next - ColorMap1440.DEGREES_PER_STEP;
+
+            m_ColorShadeCanvas.drawArc(m_ShadeRect, rad_next, ColorMap1440.DEGREES_PER_STEP, false, colorBandPaint);
 
             rad_next = rad_next_end;
         }
 
+        rad_next = 0;
+        for (int ci_next = 0; ci_next < whiteout_len; ci_next += 1) {
+            color_int = white_color_table[ci_next];
+            colorBandPaint.setColor(color_int);
+
+            float rad_next_end = rad_next + ColorMap1440.DEGREES_PER_STEP;
+
+            m_ColorShadeCanvas.drawArc(m_ShadeRect, rad_next, ColorMap1440.DEGREES_PER_STEP, false, colorBandPaint);
+
+            rad_next = rad_next_end;
+        }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        canvas.drawBitmap(m_ColorHueBitmap, 0, 0, m_BitmapPaint);
+
+        canvas.save();
+        canvas.rotate(p_HueCursorAngle, m_CenterX, m_CenterY);
+        canvas.drawBitmap(m_ColorShadeBitmap, 0, 0, m_BitmapPaint);
+        canvas.restore();
+
         canvas.drawCircle(m_HueCursorX, m_HueCursorY, m_HueCursorRadius, m_HueCursorPaint);
 
-        canvas.drawLine(m_CommonHeadX, m_CommonHeadY, m_WhiteoutTailX, m_WhiteoutTailY, m_WhiteoutPaint);
-        canvas.drawLine(m_CommonHeadX, m_CommonHeadY, m_BlackoutTailX, m_BlackoutTailY, m_BlackoutPaint);
-
         canvas.drawCircle(m_ShadeCursorX, m_ShadeCursorY, m_ShadeCursorRadius, m_ShadeCursorPaint);
-
-        canvas.drawCircle(m_ColorCursorX, m_ColorCursorY, m_ColorDotRadius, m_ColorPaint);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
         int width = MeasureSpec.getSize(widthMeasureSpec);
-            int height = MeasureSpec.getSize(heightMeasureSpec);
-            int size = width > height ? height : width;
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        int size = width > height ? height : width;
+
         setMeasuredDimension(size, size);
+    }
+
+    @Override
+    public void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        m_ColorHueBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        m_ColorHueCanvas = new Canvas(m_ColorHueBitmap);
+
+        // Draw the offscreen color shade triangle bitmap
+        m_ColorShadeBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        m_ColorShadeCanvas = new Canvas(m_ColorShadeBitmap);
+
+        recalculate_layout_and_bands(w, h);
+
+        recalculate_color_section_band();
+
+        recalculate_hue_position_from_angle(this.p_HueCursorAngle);
+
+        recalculate_color_shade_band();
+
+        //float[] shadeVertices = new float[] { m_ShadeVertex1.x, m_ShadeVertex1.y, m_ShadeVertex2.x, m_ShadeVertex2.y, m_ShadeVertex3.x, m_ShadeVertex3.y};
+        //int[] colorsVirtices = new int[] { hueColor, Color.WHITE, Color.BLACK, -0x1000000, -0x1000000, -0x1000000 };
+
+        //m_ColorShadeCanvas.drawVertices(Canvas.VertexMode.TRIANGLES, 6, shadeVertices, 0, null, 0, colorsVirtices, 0, null, 0, 0, p);
+
+        update_drawing_paints_and_shaders();
+
     }
 
     @Override
@@ -371,13 +476,12 @@ public class ColorPaletteView extends View {
         if ((action == MotionEvent.ACTION_DOWN) || (action == MotionEvent.ACTION_MOVE)) {
 
             if (action == MotionEvent.ACTION_DOWN) {
-                mActivePointerId = event.getPointerId(0);
-
+                m_ActivePointerId = event.getPointerId(0);
             }
 
             start_drag = true;
 
-            int pointer_index = event.findPointerIndex(mActivePointerId);
+            int pointer_index = event.findPointerIndex(m_ActivePointerId);
 
             float mx = event.getX(pointer_index);
             float my = event.getY(pointer_index);
@@ -389,7 +493,7 @@ public class ColorPaletteView extends View {
 
         }
         else if (action == MotionEvent.ACTION_UP) {
-            mActivePointerId = MotionEvent.INVALID_POINTER_ID;
+            m_ActivePointerId = MotionEvent.INVALID_POINTER_ID;
         }
 
         return start_drag;
@@ -411,7 +515,7 @@ public class ColorPaletteView extends View {
 
         if(m_HueBandOuterMeasure.ContainsPoint(tx, ty) && !m_HueBandInnerMeasure.ContainsPoint(tx, ty))
         {
-            // Capture the difference angle for the shade curser before we update the hue cursor angle
+            // Capture the difference angle for the shade cursor before we update the hue cursor angle
             float shade_angle_diff =  p_ShadeCursorAngle - p_HueCursorAngle;
 
             p_HueCursorAngle = m_HueBandOuterMeasure.RelativeAngleDegrees(tx, ty);
@@ -425,6 +529,8 @@ public class ColorPaletteView extends View {
             // Update the color map so we can pull the new shade tables
             recalculate_colormap_shades_and_selected_color();
 
+            recalculate_color_shade_band();
+
             // Update the color objects and shaders
             update_drawing_paints_and_shaders();
 
@@ -433,96 +539,47 @@ public class ColorPaletteView extends View {
 
             // Invalidate the view
             invalidate();
-        }
-        else if(m_BlackoutMeasure.Contains(tx, ty) && m_WhiteoutMeasure.Contains(tx, ty)){
-            p_ShadeCursorAngle = p_HueCursorAngle;
-            m_ShadeCursorExtent = m_VarBandMiddleRadius;
-            m_ShadeCursorX = ((float) Math.cos(Math.toRadians(p_ShadeCursorAngle)) * m_ShadeCursorExtent) + m_CenterX;
-            m_ShadeCursorY = ((float) Math.sin(Math.toRadians(p_ShadeCursorAngle)) * m_ShadeCursorExtent) + m_CenterY;
+        } else if(m_ShadeOuterMeasure.ContainsPoint(tx, ty) && !m_ShadeInnerMeasure.ContainsPoint(tx, ty)) {
 
-            m_BlackoutScaler = -1.0f;
-            m_WhiteoutScaler = -1.0f;
+            float shadeRelAngle = m_ShadeOuterMeasure.RelativeAngleDegrees(tx, ty);
 
-            recalculate_colormap_shades_and_selected_color();
+            float hueAdjAngle = 0.0f;
+            float shadeReferenceAngle = 0.0f;
+            if (p_HueCursorAngle <= 180.0f) {
+                hueAdjAngle = 180.0f - p_HueCursorAngle;
+                shadeReferenceAngle = shadeRelAngle + hueAdjAngle;
+            }
+            else {
+                hueAdjAngle = p_HueCursorAngle - 180.0f;
+                shadeReferenceAngle = shadeRelAngle - hueAdjAngle;
+            }
 
-            update_drawing_paints_and_shaders();
+            if ((shadeReferenceAngle <= m_ShadeUpperBoundAngle) && (shadeReferenceAngle >= m_ShadeLowerBoundAngle)) {
 
-            notify_color_change_listeners();
+                p_ShadeCursorAngle = shadeRelAngle;
 
-            invalidate();
-        }
-        else if(m_BlackoutMeasure.Contains(tx, ty)){
-            PointF centerPt = new PointF(m_CenterX, m_CenterY);
-            PointF checkPt = LineOperations.ExtendLine(m_CenterX, m_CenterY, tx, ty, 2.0f);
-            PointF intersect = m_BlackoutMeasure.Intersection(centerPt, checkPt);
-            if(intersect != null){
-                m_ShadeCursorX = intersect.x;
-                m_ShadeCursorY = intersect.y;
+                // Capture the difference angle for the shade cursor before we update the hue cursor angle
+                float shade_angle_diff =  p_ShadeCursorAngle - p_HueCursorAngle;
 
-                float adj_x = m_ShadeCursorX - m_CenterX;
-                float adj_y = m_ShadeCursorY - m_CenterY;
-                float sh_radius = (float)Math.sqrt((adj_x * adj_x) + (adj_y * adj_y));
-                p_ShadeCursorAngle = (float)Math.toDegrees(Math.acos(adj_x / sh_radius));
-                m_ShadeCursorExtent = (float)Math.sqrt( (adj_x * adj_x) + (adj_y * adj_y) );
+                m_SetColor = true;
 
-                m_BlackoutScaler = m_BlackoutMeasure.ScalerForPoint(intersect);
-                m_WhiteoutScaler = -1.0f;
+                // Re-calculate all the X, Y coordinates for the UI and the measurement touchlines
+                recalculate_palette_xy_coordinates_touchlines();
 
-                recalculate_colormap_shades_and_selected_color();
-
+                // Update the color objects and shaders
                 update_drawing_paints_and_shaders();
 
+                // Notify any listeners of the color change
                 notify_color_change_listeners();
 
+                // Invalidate the view
                 invalidate();
             }
         }
-        else if(m_WhiteoutMeasure.Contains(tx, ty)){
-            PointF centerPt = new PointF(m_CenterX, m_CenterY);
-            PointF checkPt = LineOperations.ExtendLine(m_CenterX, m_CenterY, tx, ty, 2.0f);
-            PointF intersect = m_WhiteoutMeasure.Intersection(centerPt, checkPt);
-            if(intersect != null){
-                m_ShadeCursorX = intersect.x;
-                m_ShadeCursorY = intersect.y;
-
-                float adj_x = m_ShadeCursorX - m_CenterX;
-                float adj_y = m_ShadeCursorY - m_CenterY;
-                float sh_radius = (float)Math.sqrt((adj_x * adj_x) + (adj_y * adj_y));
-                p_ShadeCursorAngle = (float)Math.toDegrees(Math.acos(adj_x / sh_radius));
-                m_ShadeCursorExtent = (float)Math.sqrt((adj_x * adj_x) + (adj_y * adj_y));
-
-                m_BlackoutScaler = -1.0f;
-                m_WhiteoutScaler = m_WhiteoutMeasure.ScalerForPoint(intersect);
-
-                recalculate_colormap_shades_and_selected_color();
-
-                update_drawing_paints_and_shaders();
-
-                notify_color_change_listeners();
-
-                invalidate();
-            }
-        }
-
     }
 
     private void recalculate_colormap_shades_and_selected_color() {
         m_ColorMap.setHueAngleDegrees(p_HueCursorAngle);
-
-        // Update the selected color
-        if ((m_BlackoutScaler == -1) && (m_WhiteoutScaler == -1)) {
-            p_ColorSelected = m_ColorMap.getPrimaryHue();
-        }
-        else if (m_BlackoutScaler != -1) {
-            int[] shade_table = m_ColorMap.getBlackoutColorTable();
-            int shade_index = (int)((float)shade_table.length * m_BlackoutScaler);
-            p_ColorSelected = shade_table[shade_index];
-        }
-        else if (m_WhiteoutScaler != -1) {
-            int[] shade_table = m_ColorMap.getWhiteoutColorTable();
-            int shade_index = (int)((float)shade_table.length * m_WhiteoutScaler);
-            p_ColorSelected = shade_table[shade_index];
-        }
     }
 
     private void recalculate_hue_position_from_angle(float hueAngle) {
@@ -532,30 +589,9 @@ public class ColorPaletteView extends View {
     }
 
     private void recalculate_shade_position_from_angle(float shadeAngle) {
-        PointF shade_pnt = m_HueBandOuterMeasure.CalculateCoordinateUsingDegrees(shadeAngle);
-        PointF intercept = null;
+        PointF shade_pnt = m_ShadeMiddleMeasure.CalculateCoordinateUsingDegrees(shadeAngle);
 
-        PointF bo_intercept = m_BlackoutMeasure.Intersection(m_CenterX, m_CenterY, shade_pnt.x, shade_pnt.y);
-        PointF wo_intercept = m_WhiteoutMeasure.Intersection(m_CenterX, m_CenterY, shade_pnt.x, shade_pnt.y);
-        if ((bo_intercept != null) && (wo_intercept != null)) {
-            float bo_len = LineOperations.LineLength(m_CenterX, m_CenterY, bo_intercept.x, bo_intercept.y);
-            float wo_len = LineOperations.LineLength(m_CenterX, m_CenterY, wo_intercept.x, wo_intercept.y);
-
-            if (bo_len < wo_len) {
-                intercept = bo_intercept;
-            }
-            else {
-                intercept = wo_intercept;
-            }
-        }
-        else if (bo_intercept != null) {
-            intercept = bo_intercept;
-        }
-        else {
-            intercept = wo_intercept;
-        }
-
-        recalculate_based_on_touch(intercept.x, intercept.y);
+        recalculate_based_on_touch(shade_pnt.x, shade_pnt.y);
     }
 
     private void recalculate_layout_and_bands(int w, int h) {
@@ -577,8 +613,6 @@ public class ColorPaletteView extends View {
         m_BandHalfWidth = m_BandWidth / 2.0f;
         m_HueCursorRadius = m_BandHalfWidth - m_HueCursorLineWidth;
 
-        m_ColorDotRadius = m_BandWidth / 2.0f;
-
         m_HueBandInnerRadius = m_HueBandOuterRadius - m_BandWidth;
         m_HueBandMiddleRadius =  m_HueBandOuterRadius - m_BandHalfWidth;
 
@@ -587,22 +621,24 @@ public class ColorPaletteView extends View {
 
         m_PalletRect = new RectF(m_CenterX - m_HueBandMiddleRadius, m_CenterY - m_HueBandMiddleRadius, m_CenterX + m_HueBandMiddleRadius, m_CenterY + m_HueBandMiddleRadius);
 
-        m_VarBandMiddleRadius = m_HueBandInnerRadius - m_BandWidth;
+        m_ShadeMiddleRadius = m_HueBandInnerRadius - m_BandWidth;
+        m_ShadeOuterRadius = m_ShadeMiddleRadius + m_BandHalfWidth;
+        m_ShadeInnerRadius = m_ShadeMiddleRadius - m_BandHalfWidth;
+
+        m_ShadeOuterMeasure = new CircleMeasure(m_CenterX, m_CenterY, m_ShadeOuterRadius);
+        m_ShadeMiddleMeasure = new CircleMeasure(m_CenterX, m_CenterY, m_ShadeMiddleRadius);
+        m_ShadeInnerMeasure = new CircleMeasure(m_CenterX, m_CenterY, m_ShadeInnerRadius);
+
+        m_ShadeRect = new RectF(m_CenterX - m_ShadeMiddleRadius, m_CenterY - m_ShadeMiddleRadius, m_CenterX + m_ShadeMiddleRadius, m_CenterY + m_ShadeMiddleRadius);
 
         m_ShadeCursorRadius = m_BandHalfWidth - m_HueCursorLineWidth;
-        m_ShadeCursorExtent = m_VarBandMiddleRadius;
 
-        m_BlackoutPaint.setStrokeWidth(m_BandWidth);
-        m_WhiteoutPaint.setStrokeWidth(m_BandWidth);
-        m_ColorBandPaint.setStrokeWidth(m_BandWidth);
         m_HuePaint.setStrokeWidth(m_BandWidth);
 
     }
 
     private void recalculate_palette_view_angles(float shade_angle_diff) {
 
-        m_BlackoutTailAngle = (p_HueCursorAngle + 120.0f) % 360.0f;
-        m_WhiteoutTailAngle = (p_HueCursorAngle + 240.0f) % 360.0f;
         p_ShadeCursorAngle = (p_HueCursorAngle + (360.0f + shade_angle_diff)) % 360.0f;
     }
 
@@ -610,33 +646,12 @@ public class ColorPaletteView extends View {
         m_HueCursorX = ((float) Math.cos(Math.toRadians(p_HueCursorAngle)) * m_HueBandMiddleRadius) + m_CenterX;
         m_HueCursorY = ((float) Math.sin(Math.toRadians(p_HueCursorAngle)) * m_HueBandMiddleRadius) + m_CenterY;
 
-        m_ShadeCursorX = ((float) Math.cos(Math.toRadians(p_ShadeCursorAngle)) * m_ShadeCursorExtent) + m_CenterX;
-        m_ShadeCursorY = ((float) Math.sin(Math.toRadians(p_ShadeCursorAngle)) * m_ShadeCursorExtent) + m_CenterY;
-
-        m_BlackoutTailX = ((float)Math.cos(Math.toRadians(m_BlackoutTailAngle)) * m_VarBandMiddleRadius) + m_CenterX;
-        m_BlackoutTailY = ((float)Math.sin(Math.toRadians(m_BlackoutTailAngle)) * m_VarBandMiddleRadius) + m_CenterY;
-
-        m_CommonHeadX = ((float)Math.cos(Math.toRadians(p_HueCursorAngle)) * m_VarBandMiddleRadius) + m_CenterX;
-        m_CommonHeadY = ((float)Math.sin(Math.toRadians(p_HueCursorAngle)) * m_VarBandMiddleRadius) + m_CenterY;
-
-        m_WhiteoutTailX = ((float)Math.cos(Math.toRadians(m_WhiteoutTailAngle)) * m_VarBandMiddleRadius) + m_CenterX;
-        m_WhiteoutTailY = ((float)Math.sin(Math.toRadians(m_WhiteoutTailAngle)) * m_VarBandMiddleRadius) + m_CenterY;
-
-        m_ColorCursorX = (m_BlackoutTailX + m_WhiteoutTailX) / 2.0f;
-        m_ColorCursorY = (m_BlackoutTailY + m_WhiteoutTailY) / 2.0f;
-
-        m_BlackoutMeasure = new TouchLine(m_BlackoutTailX, m_BlackoutTailY, m_CommonHeadX, m_CommonHeadY, m_BandWidth);
-        m_WhiteoutMeasure = new TouchLine(m_WhiteoutTailX, m_WhiteoutTailY, m_CommonHeadX, m_CommonHeadY, m_BandWidth);
+        m_ShadeCursorX = ((float) Math.cos(Math.toRadians(p_ShadeCursorAngle)) * m_ShadeMiddleRadius) + m_CenterX;
+        m_ShadeCursorY = ((float) Math.sin(Math.toRadians(p_ShadeCursorAngle)) * m_ShadeMiddleRadius) + m_CenterY;
     }
 
     private void update_drawing_paints_and_shaders() {
         m_HuePaint.setColor(m_ColorMap.getPrimaryHue());
-        m_BlackoutPaint.setShader(new LinearGradient(m_CommonHeadX, m_CommonHeadY, m_BlackoutTailX, m_BlackoutTailY,
-                m_ColorMap.getBlackoutColorTable(), m_GradientPositions, Shader.TileMode.MIRROR));
-
-        m_WhiteoutPaint.setShader(new LinearGradient(m_CommonHeadX, m_CommonHeadY, m_WhiteoutTailX, m_WhiteoutTailY,
-                m_ColorMap.getWhiteoutColorTable(), m_GradientPositions, Shader.TileMode.MIRROR));
-
         m_ColorPaint.setColor(p_ColorSelected);
     }
 

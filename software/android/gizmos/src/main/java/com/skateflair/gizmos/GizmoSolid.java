@@ -1,10 +1,11 @@
 package com.skateflair.gizmos;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
 
 import com.skateflair.colorpicker.ColorPickerView;
 import com.skateflair.colorpicker.IOnColorSelectedListener;
@@ -25,6 +26,7 @@ public class GizmoSolid extends Gizmo implements IOnColorSelectedListener {
         private int paletteColor;
         private float paletteHueAngle;
         private float paletteShadeAngle;
+        private float paletteShadeExtent;
         private int colorTarget;
 
         public GizmoState() {
@@ -78,38 +80,6 @@ public class GizmoSolid extends Gizmo implements IOnColorSelectedListener {
     }
 
     public static final String PROFILE_NAME = "solid";
-
-    public final String CONTENT_HEADER =
-            "<?xml version='1.0' encoding='UTF-8'?>\n" +
-                    "<FlairEngine>\n" +
-                    "    <Motion>\n" +
-                    "        <FallThreshold>-5000</FallThreshold>\n" +
-                    "        <FallDetectTime>5000</FallDetectTime>\n" +
-                    "        <RecoverDetectTime>2000</RecoverDetectTime>\n" +
-                    "    <StompImpactThreshold>15000</StompImpactThreshold>\n" +
-                    "    <StompRiseThreshold>-2000</StompRiseThreshold>\n" +
-                    "    <StompTimeout>2000</StompTimeout>\n" +
-                    "    </Motion>\n" +
-                    "    <Palette type='LightPaletteSolid'>\n";
-
-    public final String CONTENT_TAIL =
-            "    </Palette>\n" +
-                    "    <EffectChain>\n" +
-                    "        <!-- Highest priority effect is last. -->\n" +
-                    "        <Effect type='LightEffectStomp'>\n" +
-                    "            <Duration>800</Duration>\n" +
-                    "            <ActiveColor>\n" +
-                    "                <Brightness>1.0</Brightness>\n" +
-                    "                <Red>255</Red>\n" +
-                    "                <Green>255</Green>\n" +
-                    "                <Blue>255</Blue>\n" +
-                    "            </ActiveColor>\n" +
-                    "        </Effect>\n" +
-                    "        <Effect type='LightEffectFall'>\n" +
-                    "            <Duration>1000</Duration>\n" +
-                    "        </Effect>\n" +
-                    "    </EffectChain>\n" +
-                    "</FlairEngine>";
 
     public final String RED_TAG_TEMPLATE = "<Red>%1$d</Red>\n";
     public final String GREEN_TAG_TEMPLATE = "<Green>%1$d</Green>\n";
@@ -216,7 +186,7 @@ public class GizmoSolid extends Gizmo implements IOnColorSelectedListener {
     }
 
     @Override
-    public String getProfileXML() throws GizmoProfileException
+    public String getProfileJSON() throws GizmoProfileException
     {
         String content = null;
 
@@ -227,13 +197,13 @@ public class GizmoSolid extends Gizmo implements IOnColorSelectedListener {
             int green_comp = (int) ((selected_color & 0x0000ff00) >>> 8);
             int blue_comp = (int) (selected_color & 0x000000ff);
 
-            content = CONTENT_HEADER;
+            content = "{\n" +
+                    "\"red\": " + red_comp + "," +
+                    "\"green\": " + green_comp + "," +
+                    "\"blue\": " + blue_comp + "," +
+                    "\"intensity\": 128" +
+                    "}\n";
 
-            content += String.format(RED_TAG_TEMPLATE, red_comp);
-            content += String.format(GREEN_TAG_TEMPLATE, green_comp);
-            content += String.format(BLUE_TAG_TEMPLATE, blue_comp);
-
-            content += CONTENT_TAIL;
         } catch (Exception xcpt) {
             throw new GizmoProfileException("GizmoSolid: Unable to create configuration document.", xcpt);
         }

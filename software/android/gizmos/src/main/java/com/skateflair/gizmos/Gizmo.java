@@ -1,12 +1,14 @@
 package com.skateflair.gizmos;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.fragment.app.Fragment;
+
 import java.io.Serializable;
 import java.util.UUID;
+
 
 /**
  * Created by myron on 3/13/16.
@@ -27,7 +29,7 @@ public abstract class Gizmo implements IGizmo {
 
     public abstract UUID getGizmoUUID();
 
-    public abstract String getProfileXML() throws GizmoProfileException;
+    public abstract String getProfileJSON() throws GizmoProfileException;
 
     public abstract Serializable saveProfile();
 

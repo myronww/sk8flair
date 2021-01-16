@@ -117,6 +117,8 @@ public class FlairStatusView extends View {
 
     public void setFlairIcon(Bitmap flair_icon) {
         m_FlairIcon = flair_icon;
+        int width = m_FlairIcon.getWidth();
+        int height = m_FlairIcon.getHeight();
         m_FlairIconRect = new Rect(0, 0, m_FlairIcon.getWidth(), m_FlairIcon.getHeight());
     }
 

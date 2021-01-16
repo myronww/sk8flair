@@ -2,11 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Flair.iml" filepath="$PROJECT_DIR$/Flair.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/colorpicker/colorpicker.iml" filepath="$PROJECT_DIR$/colorpicker/colorpicker.iml" />
-      <module fileurl="file://$PROJECT_DIR$/gizmos/gizmos.iml" filepath="$PROJECT_DIR$/gizmos/gizmos.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android.iml" filepath="$PROJECT_DIR$/android.iml" group="android" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="android/app" />
+      <module fileurl="file://$PROJECT_DIR$/colorpicker/colorpicker.iml" filepath="$PROJECT_DIR$/colorpicker/colorpicker.iml" group="android/colorpicker" />
+      <module fileurl="file://$PROJECT_DIR$/gizmos/gizmos.iml" filepath="$PROJECT_DIR$/gizmos/gizmos.iml" group="android/gizmos" />
+      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" group="android/library" />
+      <module fileurl="file://$PROJECT_DIR$/software-android.iml" filepath="$PROJECT_DIR$/software-android.iml" group="android" />
     </modules>
   </component>
 </project>

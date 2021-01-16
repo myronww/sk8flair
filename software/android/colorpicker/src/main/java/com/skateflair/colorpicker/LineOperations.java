@@ -23,7 +23,7 @@ public final class LineOperations {
         float c_run = c2_x - c1_x;
         float c_slope = c_rise / c_run;
 
-        if (r_slope == c_slope) {
+        if (r_slope != c_slope) {
             float s = (-r_rise * (r1_x - c1_x) + r_run * (r1_y - c1_y)) / (-c_run * r_rise + r_run * c_rise);
             float t = (c_run * (r1_y - c1_y) - c_rise * (r1_x - c1_x)) / (-c_run * r_rise + r_run * c_rise);
 

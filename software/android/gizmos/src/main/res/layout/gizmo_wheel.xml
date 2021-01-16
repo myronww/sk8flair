@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@android:color/black">
     <TextView
         android:id="@+id/lblWheelMode"
         android:layout_width="fill_parent"
@@ -12,8 +12,8 @@
         android:textSize="32dp"
         android:gravity="center"
         android:textStyle="bold"
-        android:textColor="@color/white"
-        android:background="@color/black"
+        android:textColor="@android:color/white"
+        android:background="@android:color/black"
         />
     <FrameLayout
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="50dp"
         android:layout_below="@id/lblWheelMode"
-        android:background="@color/black">
+        android:background="@android:color/black">
 
         <com.skateflair.gizmos.SquareTile
             android:layout_width="match_parent"

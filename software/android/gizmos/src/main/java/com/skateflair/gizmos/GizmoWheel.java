@@ -1,10 +1,12 @@
 package com.skateflair.gizmos;
 
-import android.app.Fragment;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -105,9 +107,14 @@ public class GizmoWheel extends Gizmo {
     }
 
     @Override
-    public String getProfileXML() throws GizmoProfileException
+    public String getProfileJSON() throws GizmoProfileException
     {
-        return "";
+
+        String profile = "{\n" +
+                "\"intensity\": 128" +
+                "}\n";
+
+        return profile;
     }
 
     @Override
